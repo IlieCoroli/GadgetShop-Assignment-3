@@ -1,0 +1,157 @@
+import java.util.ArrayList;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class GadgetShop extends JFrame implements ActionListener {
+    private ArrayList<Gadget> gadgets = new ArrayList<Gadget>();
+    private JTextField modelField, priceField, weightField, sizeField, creditField, memoryField, phoneField, durationField, downloadSizeField, displayNumberField;
+    private JButton addMobileButton, addMP3Button, clearButton, displayAllButton, makeCallButton, downloadMusicButton;
+
+    public GadgetShop() {
+        setTitle("Gadget Shop");
+        setSize(400, 500);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(11, 2));
+
+        modelField = new JTextField();
+        priceField = new JTextField();
+        weightField = new JTextField();
+        sizeField = new JTextField();
+        creditField = new JTextField();
+        memoryField = new JTextField();
+        phoneField = new JTextField();
+        durationField = new JTextField();
+        downloadSizeField = new JTextField();
+        displayNumberField = new JTextField();
+
+        panel.add(new JLabel("Model:"));
+        panel.add(modelField);
+        panel.add(new JLabel("Price (£):"));
+        panel.add(priceField);
+        panel.add(new JLabel("Weight (grams):"));
+        panel.add(weightField);
+        panel.add(new JLabel("Size:"));
+        panel.add(sizeField);
+        panel.add(new JLabel("Initial Credit:"));
+        panel.add(creditField);
+        panel.add(new JLabel("Initial Memory (MB):"));
+        panel.add(memoryField);
+        panel.add(new JLabel("Phone Number:"));
+        panel.add(phoneField);
+        panel.add(new JLabel("Duration (minutes):"));
+        panel.add(durationField);
+        panel.add(new JLabel("Download Size (MB):"));
+        panel.add(downloadSizeField);
+        panel.add(new JLabel("Display Number:"));
+        panel.add(displayNumberField);
+
+        addMobileButton = new JButton("Add Mobile");
+        addMobileButton.addActionListener(this);
+        panel.add(addMobileButton);
+
+        addMP3Button = new JButton("Add MP3");
+        addMP3Button.addActionListener(this);
+        panel.add(addMP3Button);
+
+        clearButton = new JButton("Clear");
+        clearButton.addActionListener(this);
+        panel.add(clearButton);
+
+        displayAllButton = new JButton("Display All");
+        displayAllButton.addActionListener(this);
+        panel.add(displayAllButton);
+
+        makeCallButton = new JButton("Make A Call");
+        makeCallButton.addActionListener(this);
+        panel.add(makeCallButton);
+
+        downloadMusicButton = new JButton("Download Music");
+        downloadMusicButton.addActionListener(this);
+        panel.add(downloadMusicButton);
+
+        add(panel);
+        setVisible(true);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+    if (e.getSource() == addMobileButton) {
+        String model = modelField.getText();
+        double price = Double.parseDouble(priceField.getText());
+        int weight = Integer.parseInt(weightField.getText());
+        String size = sizeField.getText();
+        int credit = Integer.parseInt(creditField.getText());
+        gadgets.add(new Mobile(model, price, weight, size, credit));
+        clearFields();
+    } else if (e.getSource() == addMP3Button) {
+        String model = modelField.getText();
+        double price = Double.parseDouble(priceField.getText());
+        int weight = Integer.parseInt(weightField.getText());
+        String size = sizeField.getText();
+        int memory = Integer.parseInt(memoryField.getText());
+        gadgets.add(new MP3(model, price, weight, size, memory));
+        clearFields();
+    } else if (e.getSource() == clearButton) {
+        clearFields();
+    } else if (e.getSource() == displayAllButton) {
+        for (Gadget gadget : gadgets) {
+            gadget.display();
+        }
+    } else if (e.getSource() == makeCallButton) {
+        int displayNumber = getDisplayNumber();
+        if (displayNumber != -1 && gadgets.get(displayNumber) instanceof Mobile) {
+            Mobile mobile = (Mobile) gadgets.get(displayNumber);
+            String phoneNumber = phoneField.getText();
+            int duration = Integer.parseInt(durationField.getText());
+            mobile.makeCall(phoneNumber, duration);
+        }
+    } else if (e.getSource() == downloadMusicButton) {
+        int displayNumber = getDisplayNumber();
+        if (displayNumber != -1 && gadgets.get(displayNumber) instanceof MP3) {
+            MP3 mp3 = (MP3) gadgets.get(displayNumber);
+            int downloadSize = Integer.parseInt(downloadSizeField.getText());
+            mp3.downloadMusic(downloadSize);
+        }
+    }else if (e.getSource() == clearButton) {
+    clearFields();
+}
+
+}
+
+   private int getDisplayNumber() {
+    int displayNumber = -1;
+    try {
+        displayNumber = Integer.parseInt(displayNumberField.getText());
+        if (displayNumber < 0 || displayNumber >= gadgets.size()) {
+            JOptionPane.showMessageDialog(this, "Invalid display number.");
+            displayNumber = -1;
+
+        }
+    } catch (NumberFormatException ex) {
+        JOptionPane.showMessageDialog(this, "Display number must be an integer.");
+        displayNumber = -1; // Return -1 if an exception occurs
+
+    }
+    return displayNumber;
+    
+}
+
+    private void clearFields() {
+        modelField.setText("");
+    priceField.setText("");
+    weightField.setText("");
+    sizeField.setText("");
+    creditField.setText("");
+    memoryField.setText("");
+    phoneField.setText("");
+    durationField.setText("");
+    downloadSizeField.setText("");
+    displayNumberField.setText("");
+    }
+
+    public static void main(String[] args) {
+        new GadgetShop();
+    }
+}
